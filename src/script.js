@@ -316,28 +316,23 @@ camera.add(listener)
 const audioLoader = new THREE.AudioLoader()
 const ambientCreep = new THREE.Audio(listener)
 
-// Use a proxy object for GUI volume control
 const audioSettings = {
   volume: 0.4
 }
 
-audioLoader.load('./sounds/creepy-ambient.mp3',
-  (buffer) => {
+// Wait for user interaction to start sound (avoids autoplay block)
+window.addEventListener('click', () => {
+  audioLoader.load('/sounds/creepy-ambient.mp3', (buffer) => {
     ambientCreep.setBuffer(buffer)
     ambientCreep.setLoop(true)
     ambientCreep.setVolume(audioSettings.volume)
     ambientCreep.play()
 
-    // GUI slider to adjust volume using setVolume
     gui.add(audioSettings, 'volume', 0, 1).name('Creep Volume').onChange((val) => {
       ambientCreep.setVolume(val)
     })
-  },
-  undefined,
-  (err) => {
-    console.error('Audio load failed:', err)
-  }
-)
+  })
+}, { once: true }) // Only run once
 
 
 // Controls
